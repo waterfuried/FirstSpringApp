@@ -2,7 +2,7 @@ package ru.geekbrains.context;
 
 // 1. Есть класс Product (id, название, цена).
 public class Product {
-    private final int id;
+    private final Integer id;
     private final String title;
     private final int price;
 
@@ -12,7 +12,7 @@ public class Product {
         this.price = price;
     }
 
-    public int getId() { return id; }
+    public Integer getId() { return id; }
     public String getTitle() { return title; }
     public int getPrice() { return price; }
 

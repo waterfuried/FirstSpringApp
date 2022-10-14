@@ -16,14 +16,16 @@ import java.util.*;
 //аннотация используется при реализации нескольких классов для одного интерфейса
 //и ей помечается тот класс, который должен использоваться "по умолчанию"
 public class ProductRepository implements Repository {
-    private final String[] PRODUCT_TYPE = { "Вода", "Хлеб", "Картофель", "Молоко", "Яйцо куриное", "Мясо", "Соль", "Сахар", "Помидоры", "Лук" };
-    private final int[] PRODUCT_PRICE = { 20, 25, 30, 50, 55, 200, 35, 70, 100, 40 };
+    private final String[] PRODUCT_TYPE = { "Вода", "Хлеб", "Картофель", "Молоко", "Яйцо куриное",
+            "Мясо", "Соль", "Сахар", "Помидоры", "Лук" };
+    private final int[] PRODUCT_PRICE = { 20, 25, 30, 50, 55,
+            200, 35, 70, 100, 40 };
 
     // ...в виде List<Product>
     private List<Product> products;
 
     // TODO: если передать число товаров в виде аргумента (а Autowired помечаются методы с аргументом(-ами)),
-    //  выпадет следующее исключение (как его избежать я так и не понял):
+    //  выпадет следующее исключение (как его избежать, я так и не понял):
     // Exception encountered during context initialization - cancelling refresh attempt:
     // org.springframework.beans.factory.UnsatisfiedDependencyException:
     // Error creating bean with name 'productRepository':
@@ -49,7 +51,8 @@ public class ProductRepository implements Repository {
                 id = Product.randomNumber(0, PRODUCT_TYPE.length - 1);
                 already = false;
                 for (int j = 0; j < i && !already; j++)
-                    already = products.get(j).getId() == id;
+                    // сравнивать методом equals можно только объектные типы данных (с учетом автоупаковки)
+                    already = products.get(j).getId().equals(id);
             } while (already);
             products.add(new Product(id, PRODUCT_TYPE[id], PRODUCT_PRICE[id]));
         }
@@ -64,11 +67,10 @@ public class ProductRepository implements Repository {
         System.out.println();
     }
 
-    // TODO:
-    //  1. метод equals почему-то вызывать нельзя (хотя в свойствах проекта прописано использование Java 11)
-    //  2. если указан недопустимый id, исключение не выбрасывается
+    // TODO: если указан недопустимый id, исключение не выбрасывается
     @Override
-    public Product findById(int id) throws RuntimeException {
-        return products.stream().filter(p -> p.getId() == id).findFirst().orElseThrow(() -> new RuntimeException("Товар не найден"));
+    public Product findById(Integer id) throws RuntimeException {
+        return products.stream().filter(p -> p.getId().equals(id)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Товар не найден"));
     }
 }

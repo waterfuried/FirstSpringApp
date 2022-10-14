@@ -22,53 +22,37 @@ public class Cart {
 
 	// 3. При каждом запросе корзины из контекста, должна создаваться новая корзина.
 	@PostConstruct
-	public void init() {
-		this.cart = new ArrayList<>();
-	}
+	public void init() { this.cart = new ArrayList<>(); }
 
 	// вернуть весь список допустимых товаров
-	public List<Product> getAvail() {
-		return avail;
-	}
+	public List<Product> getAvail() { return avail; }
 
 	// задать список допустимых товаров
-	public void setAvail(List<Product> avail) {
-		this.avail = avail;
-	}
+	public void setAvail(List<Product> avail) { this.avail = avail; }
 
 	// вернуть все содержимое корзины
-	public List<Product> getAll() {
-		return cart;
-	}
+	public List<Product> getAll() { return cart; }
 
 	// заполнить корзину по списку
-	public void setAll(List<Product> list) {
-		this.cart = list;
+	public void setAll(List<Product> list) { this.cart = list; }
+
+	public void add(Product product) throws RuntimeException {
+		if (!avail.contains(product))
+			throw new RuntimeException("Недопустимый товар!");
+		cart.add(product);
 	}
 
-	public void add(Product product) {
-		if (avail.contains(product))
-			cart.add(product);
-		else
-			System.out.println("Недопустимый товар!");
-	}
-
-	public void remove(Product product) {
-		if (cart.contains(product))
-			cart.remove(product);
-		else
-			System.out.println("Товара нет в корзине!");
+	public void remove(Product product) throws RuntimeException {
+		if (!cart.contains(product))
+			throw new RuntimeException("Товара нет в корзине!");
+		cart.remove(product);
 	}
 
 	// TODO: при добавлении того товара, который уже есть в корзине, он иногда(!) может не добавиться в нее
-	public void addById(int id) {
-		cart.add(repo.findById(id));
-	}
+	public void addById(int id) { cart.add(repo.findById(id)); }
 
 	// TODO: при удалении товара из корзины он иногда(!) удаляется и из списка товаров ProductRepository
-	public void removeById(int id) {
-		cart.removeIf(p -> p.getId() == id);
-	}
+	public void removeById(int id) { cart.removeIf(p -> p.getId() == id); }
 
 	public void show() {
 		if (cart.size() == 0)
@@ -80,13 +64,9 @@ public class Cart {
 		System.out.println();
 	}
 
-	// TODO: при очистке корзины обнуляется и список товаров ProductRepository
-	public void clean() {
-		cart.clear();
-	}
+	// TODO: при очистке корзины иногда(!) обнуляется и список товаров ProductRepository
+	public void clean() { cart.clear(); }
 
 	@Autowired
-	public void setRepository(ProductRepository repo) {
-		this.repo = repo;
-	}
+	public void setRepository(ProductRepository repo) { this.repo = repo; }
 }
